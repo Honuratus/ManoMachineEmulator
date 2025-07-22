@@ -1,32 +1,61 @@
 # Morris Mano's Basic Computer Emulator
 
-A minimal emulator of Morris Mano’s Basic Computer architecture.
-It uses a sequential counter to manage instruction flow and implements control logic for microinstruction execution.
+A minimal emulator of Morris Mano’s Basic Computer architecture with Qt GUI integration.
+
+It uses a sequential counter to manage instruction flow and control logic for microinstruction execution.  
+The GUI emulates a 512×256 memory-mapped pixel screen, showing real output based on executed instructions.
+
+---
 
 ## Project Structure
 
-- src/ — source code files (C code in .cpp files)
-- include/ — header files
-- Makefile — build system
+- `src/` — Source files (`.cpp`)
+- `include/` — Header files
+- `Makefile` — Build system
+- `build/ManoMachineEmulator.exe` — Output binary
+
+---
 
 ## About
 
-- Core logic is written in C but placed in C++ files to facilitate future integration with Qt GUI.
-- The emulator simulates the fetch-decode-execute cycle using a sequential counter for instruction sequencing.
-- Control logic manages microinstructions to mimic the original Basic Computer behavior.
-- Users can modify or load programs dynamically using the load_program function in main.cpp.
+- Core logic written in C, wrapped in C++ for Qt integration.
+- Simulates fetch-decode-execute cycle with sequential instruction counter.
+- Microinstruction control logic mimics original Basic Computer.
+- GUI reads memory to emulate real screen output.
+- Programs can be loaded/modified dynamically via `load_program()` in `computer.cpp`.
 
-## Build
+---
 
-To build the project, run:
-1. ```make```
-2. `./build/program.out` or `.\build\program.exe`
+## Example Program
 
+```assembly
+ORG 050
+SCREEN,   HEX C80F
+PIXELS,   HEX FFFF
 
+ORG 100
+START,    LDA PIXELS
+          STA I SCREEN
+          HLT
+END
+```
 
-## Future Work
+```c
+void load_program(Computer* comp) {
+    memset(comp->mem->data, 0, 65536 * sizeof(uint16_t));
+    comp->PC->value = 0x100;
 
-- Implement Interrupts
-- Integrate a Qt GUI for visualization and interaction.
-- Expand the instruction set and add debugging features.
-- Write an assembler for this Basic Computer emulator to simplify program creation.
+    comp->mem->data[0x100] = 0x2051; // LDA PIXELS
+    comp->mem->data[0x101] = 0xB050; // STA I SCREEN
+    comp->mem->data[0x102] = 0x7001; // HLT
+
+    comp->mem->data[0x050] = 0xC80F; // SCREEN base address
+    comp->mem->data[0x051] = 0xFFFF; // PIXELS pattern
+}
+```
+
+## Run
+```bash
+make
+.\build\ManoMachineEmulator.exe or ./build/ManoMachineEmulator.out
+```
