@@ -23,7 +23,7 @@ void clear_flag(uint8_t* flags, FlagType type) {
     *flags &= ~mask;
 }
 
-int check_flag(uint8_t flags, FlagType type) {
+int check_flag(uint8_t* flags, FlagType type) {
     uint8_t mask = get_mask_from_type(type);
-    return (flags & mask) != 0;
+    return (*flags & mask) != 0;
 }

@@ -3,6 +3,10 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 #define I_FLAG 0x01
 #define S_FLAG 0x02
@@ -25,6 +29,10 @@ typedef enum{
 
 void set_flag(uint8_t* flags, FlagType type);
 void clear_flag(uint8_t* flags, FlagType type);
-int check_flag(uint8_t flags, FlagType type);
+int check_flag(uint8_t* flags, FlagType type);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

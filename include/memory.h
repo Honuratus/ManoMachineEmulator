@@ -3,7 +3,11 @@
 
 #include <stdint.h>
 
-#define MEMORY_SIZE 4096
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#define MEMORY_SIZE 65536
 
 typedef struct {
     uint16_t data[MEMORY_SIZE];
@@ -12,5 +16,9 @@ typedef struct {
 
 uint16_t read_memory(Memory* mem, uint16_t addr);
 void write_memory(Memory* mem, uint16_t addr, uint16_t val);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -1,6 +1,8 @@
 #include "computer.h"
+#include "config.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 void init_computer(Computer* comp){
     comp->AC = (Register*)malloc(sizeof(Register));
@@ -15,7 +17,8 @@ void init_computer(Computer* comp){
     comp->i = (Instruction*)malloc(sizeof(Instruction));
     
     comp->mem = (Memory*)malloc(sizeof(Memory));    
-    
+    comp->flags = (uint8_t*)malloc(sizeof(uint8_t));
+
     *(comp->flags) = 0;
     clear_register(comp->AC);
     clear_register(comp->AR);
@@ -42,4 +45,38 @@ void free_computer(Computer* comp){
     free(comp->TR);
     free(comp->mem);
     free(comp->i);
+    free(comp->flags);
+}
+
+
+/*
+
+          ORG 050
+
+SCREEN,   HEX C80F
+PIXELS,   HEX FFFF
+
+          ORG 100
+
+START,    LDA PIXELS
+          STA I SCREEN
+          HLT
+
+          END
+
+*/
+void load_program(Computer* comp) {
+    memset(comp->mem->data, 0, 65536 * sizeof(uint16_t));
+
+    comp->PC->value = 0x100; // ORG 100
+
+    comp->mem->data[0x100] = 0x2000 | 0x051; // LDA
+    comp->mem->data[0x101] = 0xB000 | 0x050; // STA I
+    comp->mem->data[0x102] = 0x7001; // HLT
+
+
+    // data
+    comp->mem->data[0x050] = 0xC80F; 
+    comp->mem->data[0x051] = 0xFFFF;
+
 }

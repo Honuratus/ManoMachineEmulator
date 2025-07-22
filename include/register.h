@@ -4,6 +4,10 @@
 #include <stdio.h>
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct{
     uint16_t bit_width;
     uint16_t value;
@@ -17,5 +21,8 @@ void clear_register(Register* reg);
 
 void increment_register(Register* reg);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif

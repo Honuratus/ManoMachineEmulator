@@ -6,6 +6,10 @@
 #include "register.h"
 #include "flag.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef uint8_t Flags;
 
 typedef struct{
@@ -25,5 +29,11 @@ typedef struct{
 
 void init_computer(Computer* comp);
 void free_computer(Computer* comp);
+void load_program(Computer* comp);
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

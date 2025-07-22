@@ -3,6 +3,10 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef enum{
     IAM, // indirect access memory instruction type
     DAM, // direct access memory instruction type
@@ -21,5 +25,9 @@ typedef struct{
 
 void decode_instruction(Instruction* i);
 void determine_type_instruction(Instruction* i);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -66,7 +66,7 @@ void execute_register_ref(Computer* comp) {
     // CME 
     if ((irValue & 0x0100) != 0) { // check r8
         // assign it's complement to carry flag
-        if (check_flag(*comp->flags, E) == 1) clear_flag(comp->flags, E);
+        if (check_flag(comp->flags, E) == 1) clear_flag(comp->flags, E);
         else set_flag(comp->flags, E);
     }
 
@@ -74,7 +74,7 @@ void execute_register_ref(Computer* comp) {
     if ((irValue & 0x0080) != 0) { // check r7
         //circulor rotate right
         uint16_t acValue = read_register(comp->AC);
-        int eVal = check_flag(*comp->flags, E);
+        int eVal = check_flag(comp->flags, E);
         int lsb = acValue & 1; // get lsb of acValue
 
         acValue >>= 1; // shift right
@@ -90,7 +90,7 @@ void execute_register_ref(Computer* comp) {
     if ((irValue & 0x0040) != 0) { // check r6
         // circulor rotate left
         uint16_t acValue = read_register(comp->AC);
-        int eVal = check_flag(*comp->flags, E);
+        int eVal = check_flag(comp->flags, E);
         int msb = (acValue & 0x8000) != 0; // get msb of acValue
 
         acValue <<= 1; // shift left
@@ -132,7 +132,7 @@ void execute_register_ref(Computer* comp) {
 
     // SZE 
     if ((irValue & 0x0002) != 0) { // check r1
-        if (check_flag(*comp->flags, E) == 0) {
+        if (check_flag(comp->flags, E) == 0) {
             increment_register(comp->PC);
         }
     }
@@ -178,7 +178,7 @@ void execute_io(Computer* comp) {
     // SKI 
     if ((irValue & 0x0200) != 0) { // check B9
         // skip on input
-        if (check_flag(*comp->flags, FGI) == 1) {
+        if (check_flag(comp->flags, FGI) == 1) {
             increment_register(comp->PC);
         }
     }
@@ -186,7 +186,7 @@ void execute_io(Computer* comp) {
     // SKO 
     if ((irValue & 0x0100) != 0) { // check B8
         // skip on output
-        if (check_flag(*comp->flags, FGO) == 1) {
+        if (check_flag(comp->flags, FGO) == 1) {
             increment_register(comp->PC);
         }
     }
@@ -305,7 +305,7 @@ void execute(Computer* comp) {
     // else it's register referance instructions
     else if (opcode == 7) {
 
-        if (check_flag(*comp->flags, I) == 0) { 
+        if (check_flag(comp->flags, I) == 0) { 
             execute_register_ref(comp); 
         } else { 
             execute_io(comp); 
@@ -316,5 +316,12 @@ void execute(Computer* comp) {
 
 
 void interrupt_service(Computer* comp) {
-    // will be implemented
+    write_memory(comp->mem, 0, read_register(comp->PC));
+
+    write_register(comp->PC, 1);
+
+    clear_flag(comp->flags, IEN);
+    clear_flag(comp->flags, R);
+
+    clear_register(comp->SC);
 }
